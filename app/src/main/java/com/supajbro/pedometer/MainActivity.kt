@@ -11,37 +11,31 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.getSystemService
 import com.supajbro.pedometer.ui.theme.PedometerTheme
 import java.text.SimpleDateFormat
 import java.util.*
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.ui.draw.scale
-import androidx.compose.animation.core.animateIntAsState
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.draw.shadow
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.ui.unit.dp
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+
 
 class MainActivity : ComponentActivity(), SensorEventListener
 {
@@ -132,11 +126,33 @@ class MainActivity : ComponentActivity(), SensorEventListener
 fun PedometerScreen(steps: Int) {
     var useMiles by remember { mutableStateOf(false) }
 
+    // Animated gradient colors
+    val infiniteTransition = rememberInfiniteTransition()
+    val color1 by infiniteTransition.animateColor(
+        initialValue = Color(0xFF0F2027),
+        targetValue = Color(0xFF2C5364),
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 4000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+    val color2 by infiniteTransition.animateColor(
+        initialValue = Color(0xFF2C5364),
+        targetValue = Color(0xFF203A43),
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 4000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black),
-        //verticalArrangement = Arrangement.Top,
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(color1, color2)
+                )
+            ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TotalDistance(steps = steps, useMiles)
@@ -191,8 +207,6 @@ fun TotalDistance(steps: Int, useMiles: Boolean) {
 @Composable
 fun StepCounter(steps: Int) {
     var previousSteps by remember { mutableStateOf(steps) }
-    val targetSteps = if (steps > previousSteps) steps else previousSteps
-    val animatedSteps by animateIntAsState(targetValue = targetSteps, label = "stepAnimation")
     val scale by animateFloatAsState(
         targetValue = if (steps > previousSteps) 1.2f else 1f,
         label = "scaleAnimation"
@@ -217,13 +231,12 @@ fun StepCounter(steps: Int) {
         Spacer(modifier = Modifier.padding(vertical = 16.dp))
 
         Text(
-            text = "$animatedSteps",
+            text = "$steps",
             fontSize = 48.sp,
             color = Color.White,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .scale(scale)
-                .shadow(10.dp, ambientColor = Color.White, spotColor = Color.White)
         )
     }
 }

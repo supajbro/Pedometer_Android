@@ -72,7 +72,7 @@ class MainActivity : ComponentActivity(), SensorEventListener
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    StepCounterScreen(stepCountState.value)
+                    PedometerScreen(stepCountState.value)
                 }
             }
         }
@@ -124,14 +124,56 @@ class MainActivity : ComponentActivity(), SensorEventListener
 }
 
 @Composable
-fun StepCounterScreen(steps: Int) {
-    // Remember previous steps across recompositions
-    var previousSteps by remember { mutableStateOf(steps) }
+fun PedometerScreen(steps: Int) {
+    // You can adjust spacing and alignment here
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black),
+        //verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        TotalDistance(steps = steps)
+        Spacer(modifier = Modifier.weight(1f))
 
-    // Only animate if steps increased
+        StepCounter(steps = steps)
+        Spacer(modifier = Modifier.weight(1f))
+    }
+}
+
+@Composable
+fun TotalDistance(steps: Int) {
+    // Calculate distance in km
+    val strideLengthMeters = 0.78f
+    val distanceKm = (steps * strideLengthMeters / 1000f)
+    val distanceText = String.format("%.2f",distanceKm)
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Total KMs today:",
+            fontSize = 28.sp,
+            color = Color.Cyan,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 8.dp, bottom = 2.dp)
+        )
+
+        Text(
+            text = "$distanceText KM",
+            fontSize = 32.sp,
+            color = Color.Cyan,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 32.dp, bottom = 32.dp)
+        )
+    }
+}
+
+@Composable
+fun StepCounter(steps: Int) {
+    var previousSteps by remember { mutableStateOf(steps) }
     val targetSteps = if (steps > previousSteps) steps else previousSteps
     val animatedSteps by animateIntAsState(targetValue = targetSteps, label = "stepAnimation")
-
     val scale by animateFloatAsState(
         targetValue = if (steps > previousSteps) 1.2f else 1f,
         label = "scaleAnimation"
@@ -143,10 +185,6 @@ fun StepCounterScreen(steps: Int) {
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black),
-        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(

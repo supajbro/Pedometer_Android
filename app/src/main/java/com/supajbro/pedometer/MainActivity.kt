@@ -41,14 +41,13 @@ class MainActivity : ComponentActivity(), SensorEventListener
 {
     private lateinit var sensorManager: SensorManager
     private var stepCounterSensor: Sensor? = null
-
     private val stepCountState = mutableStateOf(0)
-
     private val prefs by lazy{
         getSharedPreferences("pedometer_prefs", Context.MODE_PRIVATE)
     }
-
     private var baselineSteps: Float = -1f
+
+    private val dailyGoal = 10000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

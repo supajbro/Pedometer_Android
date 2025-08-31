@@ -37,6 +37,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 
 class MainActivity : ComponentActivity(), SensorEventListener
 {
@@ -125,7 +130,8 @@ class MainActivity : ComponentActivity(), SensorEventListener
 
 @Composable
 fun PedometerScreen(steps: Int) {
-    // You can adjust spacing and alignment here
+    var useMiles by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -133,26 +139,39 @@ fun PedometerScreen(steps: Int) {
         //verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TotalDistance(steps = steps)
+        TotalDistance(steps = steps, useMiles)
         Spacer(modifier = Modifier.weight(1f))
 
         StepCounter(steps = steps)
         Spacer(modifier = Modifier.weight(1f))
+
+        // Button at bottom to toggle km/miles
+        Button(
+            onClick = { useMiles = !useMiles },
+            colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
+            modifier = Modifier.padding(bottom = 32.dp)
+        ) {
+            Text(
+                text = if (useMiles) "Show in KM" else "Show in Miles",
+                color = Color.White
+            )
+        }
     }
 }
 
 @Composable
-fun TotalDistance(steps: Int) {
-    // Calculate distance in km
+fun TotalDistance(steps: Int, useMiles: Boolean) {
     val strideLengthMeters = 0.78f
     val distanceKm = (steps * strideLengthMeters / 1000f)
-    val distanceText = String.format("%.2f",distanceKm)
+    val distance = if (useMiles) distanceKm * 0.621371f else distanceKm
+    val unitText = if (useMiles) "mi" else "km"
+    val distanceText = String.format("%.2f",distance)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Total KMs today:",
+            text = "Total Distance Today:",
             fontSize = 28.sp,
             color = Color.Cyan,
             textAlign = TextAlign.Center,
@@ -160,7 +179,7 @@ fun TotalDistance(steps: Int) {
         )
 
         Text(
-            text = "$distanceText KM",
+            text = "$distanceText $unitText",
             fontSize = 32.sp,
             color = Color.Cyan,
             textAlign = TextAlign.Center,

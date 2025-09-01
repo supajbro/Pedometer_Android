@@ -1,5 +1,6 @@
 package com.supajbro.pedometer.ui.theme
 
+import android.content.Context
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -22,10 +23,14 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 
 
 @Composable
 fun PedometerScreen(steps: Int) {
+    val context = LocalContext.current
+    //val prefs = context.getSharedPreferences("pedometer", Context.MODE_PRIVATE)
+    //val steps = prefs.getInt("todaySteps", 0)
     var useMiles by remember { mutableStateOf(false) }
 
     // Animated gradient colors

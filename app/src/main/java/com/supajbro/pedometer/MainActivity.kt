@@ -1,7 +1,9 @@
 package com.supajbro.pedometer
 
+import StepCountingService
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -62,6 +64,13 @@ class MainActivity : ComponentActivity(), SensorEventListener
                 ActivityCompat.requestPermissions(this,
                     arrayOf(Manifest.permission.ACTIVITY_RECOGNITION), 1)
             }
+        }
+
+        val intent = Intent(this, StepCountingService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent)
+        } else {
+            startService(intent)
         }
 
         setContent {

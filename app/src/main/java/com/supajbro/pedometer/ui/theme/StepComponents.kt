@@ -13,6 +13,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -69,7 +70,7 @@ fun PedometerScreen(steps: Int, goal: Int) {
         TotalDistance(steps = steps, useMiles)
         Spacer(modifier = Modifier.weight(1f))
 
-        StepCounter(steps = steps)
+        StepCounter(steps = steps, goal = goal)
         Spacer(modifier = Modifier.weight(1f))
 
         DailyGoalProgress(steps = steps, goal = goal)
@@ -159,7 +160,7 @@ fun TotalDistance(steps: Int, useMiles: Boolean) {
 }
 
 @Composable
-fun StepCounter(steps: Int) {
+fun StepCounter(steps: Int, goal: Int) {
     var previousSteps by remember { mutableStateOf(steps) }
     val scale by animateFloatAsState(
         targetValue = if (steps > previousSteps) 1.2f else 1f,
@@ -170,25 +171,41 @@ fun StepCounter(steps: Int) {
         if (steps > previousSteps) previousSteps = steps
     }
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+    val progress = (steps.toFloat() / goal.toFloat()).coerceIn(0f, 1f)
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .size(220.dp) // Circle size
+            .padding(16.dp)
     ) {
-        Text(
-            text = "Steps today:",
-            fontSize = 32.sp,
-            color = Color.White,
-            textAlign = TextAlign.Center
+        // Outer circular progress (goal ring)
+        CircularProgressIndicator(
+            progress = progress * 2,
+            strokeWidth = 12.dp,
+            color = Color.Cyan,
+            modifier = Modifier.fillMaxSize()
         )
 
-        Spacer(modifier = Modifier.padding(vertical = 16.dp))
+        // Inner content (step text)
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = "Steps today:",
+                fontSize = 24.sp,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
 
-        Text(
-            text = "$steps",
-            fontSize = 48.sp,
-            color = Color.White,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.scale(scale)
-        )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "$steps",
+                fontSize = 40.sp,
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.scale(scale)
+            )
+        }
     }
 }
 
@@ -205,13 +222,13 @@ fun DailyGoalProgress(steps: Int, goal: Int){
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        LinearProgressIndicator(
-            progress = progress,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(12.dp),
-            color = Color.Cyan
-        )
+        //CircularProgressIndicator(
+        //    progress = progress,
+        //    modifier = Modifier
+        //        .fillMaxWidth()
+        //        .height(12.dp),
+        //    color = Color.Cyan
+        //)
 
         Spacer(modifier = Modifier.height(8.dp))
 

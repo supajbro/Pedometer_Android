@@ -181,7 +181,7 @@ fun StepCounter(steps: Int, goal: Int) {
     ) {
         // Outer circular progress (goal ring)
         CircularProgressIndicator(
-            progress = progress * 2,
+            progress = progress,
             strokeWidth = 12.dp,
             color = Color.Cyan,
             modifier = Modifier.fillMaxSize()

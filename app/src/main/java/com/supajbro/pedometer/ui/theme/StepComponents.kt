@@ -12,6 +12,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,10 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 
 
 @Composable
-fun PedometerScreen(steps: Int) {
-    val context = LocalContext.current
-    //val prefs = context.getSharedPreferences("pedometer", Context.MODE_PRIVATE)
-    //val steps = prefs.getInt("todaySteps", 0)
+fun PedometerScreen(steps: Int, goal: Int) {
     var useMiles by remember { mutableStateOf(false) }
 
     // Animated gradient colors
@@ -67,6 +65,8 @@ fun PedometerScreen(steps: Int) {
 
         StepCounter(steps = steps)
         Spacer(modifier = Modifier.weight(1f))
+
+        DailyGoalProgress(steps = steps, goal = goal)
 
         // Button at bottom to toggle km/miles
         Button(
@@ -141,6 +141,37 @@ fun StepCounter(steps: Int) {
             color = Color.White,
             textAlign = TextAlign.Center,
             modifier = Modifier.scale(scale)
+        )
+    }
+}
+
+@Composable
+fun DailyGoalProgress(steps: Int, goal: Int){
+    val progress = (steps.toFloat() / goal.toFloat()).coerceIn(0f, 1f)
+
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = "Daily Goal: $goal steps",
+            fontSize =  20.sp,
+            color = Color.White
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LinearProgressIndicator(
+            progress = progress,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(12.dp),
+            color = Color.Cyan
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = "${(progress* 100).toInt()}% complete",
+            fontSize = 18.sp,
+            color = Color.Cyan
         )
     }
 }

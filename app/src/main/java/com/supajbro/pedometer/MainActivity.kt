@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,8 +49,6 @@ class MainActivity : ComponentActivity(), SensorEventListener
         getSharedPreferences("pedometer_prefs", Context.MODE_PRIVATE)
     }
     private var baselineSteps: Float = -1f
-
-    private val dailyGoal = 10000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,13 +72,17 @@ class MainActivity : ComponentActivity(), SensorEventListener
             startService(intent)
         }
 
+        val prefs = getSharedPreferences("pedometer", Context.MODE_PRIVATE)
+        val steps by stepCountState
+        val goal = prefs.getInt("dailyGoal", 10000)
+
         setContent {
             PedometerTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    PedometerScreen(stepCountState.value)
+                    PedometerScreen(steps = steps, goal = goal)
                 }
             }
         }
@@ -119,6 +122,10 @@ class MainActivity : ComponentActivity(), SensorEventListener
 
             val currentSteps = (totalSinceReboot - baselineSteps).toInt()
             stepCountState.value = currentSteps
+
+            prefs.edit()
+                .putInt("todaySteps", currentSteps)
+                .apply()
         }
     }
 

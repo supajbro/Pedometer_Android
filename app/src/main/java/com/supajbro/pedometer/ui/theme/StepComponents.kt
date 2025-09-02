@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -23,8 +24,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 
 
 @Composable
@@ -60,6 +63,9 @@ fun PedometerScreen(steps: Int, goal: Int) {
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Title()
+        Spacer(modifier = Modifier.weight(1f))
+
         TotalDistance(steps = steps, useMiles)
         Spacer(modifier = Modifier.weight(1f))
 
@@ -80,6 +86,47 @@ fun PedometerScreen(steps: Int, goal: Int) {
             )
         }
     }
+}
+
+@Composable
+fun Title(){
+    val infiniteTransition = rememberInfiniteTransition()
+
+    // Animate flickering color between yellow, orange, and red
+    val animatedColor by infiniteTransition.animateColor(
+        initialValue = Color(0xFFFFA500), // Orange
+        targetValue = Color(0xFFFF4500), // Red-Orange
+        animationSpec = infiniteRepeatable(
+            animation = tween(300, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    // Animate slight scale for flicker effect
+    val animatedScale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.05f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(400, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    Text(
+        text = "Step Buddy",
+        fontSize = 50.sp,
+        color = animatedColor,
+        textAlign = TextAlign.Center,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier
+            .padding(top = 16.dp)
+            .scale(animatedScale)
+            .shadow(
+                elevation = 20.dp,
+                ambientColor = Color(0xFFFFD700),
+                spotColor = Color(0xFFFF8C00)
+            )
+    )
 }
 
 @Composable

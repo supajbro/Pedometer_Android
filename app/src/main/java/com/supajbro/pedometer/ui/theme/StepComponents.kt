@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 
 
@@ -196,6 +197,8 @@ fun TotalDistance(steps: Int, useMiles: Boolean) {
         Text(
             text = "Total Distance Today:",
             fontSize = 28.sp,
+            fontFamily = FontFamily.SansSerif,
+            fontWeight = FontWeight.Bold,
             color = Color.Cyan,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 8.dp, bottom = 2.dp)
@@ -204,6 +207,8 @@ fun TotalDistance(steps: Int, useMiles: Boolean) {
         Text(
             text = "$distanceText $unitText",
             fontSize = 32.sp,
+            fontFamily = FontFamily.SansSerif,
+            fontWeight = FontWeight.Bold,
             color = Color.Cyan,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 32.dp, bottom = 32.dp)
@@ -244,6 +249,8 @@ fun StepCounter(steps: Int, goal: Int) {
             Text(
                 text = "Steps today:",
                 fontSize = 24.sp,
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Bold,
                 color = Color.White,
                 textAlign = TextAlign.Center
             )
@@ -253,6 +260,8 @@ fun StepCounter(steps: Int, goal: Int) {
             Text(
                 text = "$steps",
                 fontSize = 40.sp,
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Bold,
                 color = Color.White,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.scale(scale)
@@ -269,24 +278,20 @@ fun DailyGoalProgress(steps: Int, goal: Int){
         Text(
             text = "Daily Goal: $goal steps",
             fontSize =  20.sp,
+            fontFamily = FontFamily.SansSerif,
+            fontWeight = FontWeight.Bold,
             color = Color.White
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-
-        //CircularProgressIndicator(
-        //    progress = progress,
-        //    modifier = Modifier
-        //        .fillMaxWidth()
-        //        .height(12.dp),
-        //    color = Color.Cyan
-        //)
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             text = "${(progress* 100).toInt()}% complete",
             fontSize = 18.sp,
+            fontFamily = FontFamily.SansSerif,
+            fontWeight = FontWeight.Bold,
             color = Color.Cyan
         )
     }

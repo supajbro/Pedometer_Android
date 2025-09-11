@@ -178,7 +178,7 @@ fun PedometerScreen(steps: Int, goal: Int) {
         Spacer(modifier = Modifier.weight(1f))
 
         TotalDistance(steps = steps, useMiles)
-        Spacer(modifier = Modifier.weight(1f))
+        //Spacer(modifier = Modifier.weight(.5f))
 
         StepCounter(steps = steps, goal = goal)
         Spacer(modifier = Modifier.weight(1f))
@@ -258,7 +258,7 @@ fun TotalDistance(steps: Int, useMiles: Boolean) {
             fontWeight = FontWeight.Bold,
             color = Color.Cyan,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 8.dp, bottom = 2.dp)
+            modifier = Modifier.padding(bottom = 4.dp) // smaller spacing below
         )
 
         Text(
@@ -268,7 +268,7 @@ fun TotalDistance(steps: Int, useMiles: Boolean) {
             fontWeight = FontWeight.Bold,
             color = Color.Cyan,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 32.dp, bottom = 32.dp)
+            modifier = Modifier.padding(top = 0.dp) // no extra top padding
         )
     }
 }

@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -35,21 +36,75 @@ import androidx.compose.ui.text.font.FontWeight
 fun PedometerScreen(steps: Int, goal: Int) {
     var useMiles by remember { mutableStateOf(false) }
 
-    // Animated gradient colors
+// Animated multi-color gradient
     val infiniteTransition = rememberInfiniteTransition()
+
     val color1 by infiniteTransition.animateColor(
-        initialValue = Color(0xFF0F2027),
-        targetValue = Color(0xFF2C5364),
+        initialValue = Color(0xFF1A3A4B),
+        targetValue = Color(0xFF3D7589),
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 3000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    val color2 by infiniteTransition.animateColor(
+        initialValue = Color(0xFF3D7589),
+        targetValue = Color(0xFF2B5262),
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 3500, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    val color3 by infiniteTransition.animateColor(
+        initialValue = Color(0xFF2B5262),
+        targetValue = Color(0xFF1A3A4B),
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 4000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         )
     )
-    val color2 by infiniteTransition.animateColor(
-        initialValue = Color(0xFF2C5364),
-        targetValue = Color(0xFF203A43),
+
+    val color4 by infiniteTransition.animateColor(
+        initialValue = Color(0xFF3D7589),
+        targetValue = Color(0xFF7CA1B0),
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 4000, easing = LinearEasing),
+            animation = tween(durationMillis = 5500, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    // Animate gradient positions
+    val startX by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 4000f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(6000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+    val startY by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 4000f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(6500, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+    val endX by infiniteTransition.animateFloat(
+        initialValue = 4000f,
+        targetValue = 0f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(7000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+    val endY by infiniteTransition.animateFloat(
+        initialValue = 4000f,
+        targetValue = 0f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(7500, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         )
     )
@@ -58,8 +113,10 @@ fun PedometerScreen(steps: Int, goal: Int) {
         modifier = Modifier
             .fillMaxSize()
             .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(color1, color2)
+                brush = Brush.linearGradient(
+                    colors = listOf(color1, color2, color3, color4),
+                    start = Offset(startX, startY),
+                    end = Offset(endX, endY)
                 )
             ),
         horizontalAlignment = Alignment.CenterHorizontally

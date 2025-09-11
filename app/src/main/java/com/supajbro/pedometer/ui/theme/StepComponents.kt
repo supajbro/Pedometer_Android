@@ -155,7 +155,7 @@ fun Title(){
         initialValue = Color(0xFFFFA500), // Orange
         targetValue = Color(0xFFFF4500), // Red-Orange
         animationSpec = infiniteRepeatable(
-            animation = tween(300, easing = LinearEasing),
+            animation = tween(800, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         )
     )
@@ -165,7 +165,7 @@ fun Title(){
         initialValue = 1f,
         targetValue = 1.05f,
         animationSpec = infiniteRepeatable(
-            animation = tween(400, easing = LinearEasing),
+            animation = tween(800, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         )
     )
@@ -179,11 +179,6 @@ fun Title(){
         modifier = Modifier
             .padding(top = 16.dp)
             .scale(animatedScale)
-            .shadow(
-                elevation = 20.dp,
-                ambientColor = Color(0xFFFFD700),
-                spotColor = Color(0xFFFF8C00)
-            )
     )
 }
 

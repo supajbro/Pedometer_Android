@@ -9,8 +9,11 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -31,7 +34,56 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.unit.dp
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun PedometerPager(steps: Int, goal: Int){
+    // Page count as a State (source of truth)
+    var pageCount by remember { mutableStateOf(2) }
+
+    // Pager state with pageCount
+    val pagerState = rememberPagerState(pageCount = { pageCount })
+
+    Box(modifier = Modifier.fillMaxSize()){
+        HorizontalPager(state = pagerState) { page ->
+            when (page){
+                0 -> PedometerScreen(steps = steps, goal = goal)
+                1 -> DailyGoalScreen()
+            }
+        }
+
+        // Page Indicator
+        PagerIndicator(pagerState = pagerState, pageCount = 2)
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun PagerIndicator(pagerState: androidx.compose.foundation.pager.PagerState, pageCount: Int) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        for (i in 0 until pageCount) {
+            Box(
+                modifier = Modifier
+                    .size(if (i == pagerState.currentPage) 12.dp else 8.dp)
+                    .padding(4.dp)
+                    .background(
+                        color = if (i == pagerState.currentPage) Color.White else Color.Gray,
+                        shape = CircleShape
+                    )
+            )
+        }
+    }
+}
 
 @Composable
 fun PedometerScreen(steps: Int, goal: Int) {
@@ -148,6 +200,11 @@ fun PedometerScreen(steps: Int, goal: Int) {
 }
 
 @Composable
+fun DailyGoalScreen(){
+
+}
+
+@Composable
 fun Title(){
     val infiniteTransition = rememberInfiniteTransition()
 
@@ -172,7 +229,7 @@ fun Title(){
     )
 
     Text(
-        text = "Step Buddy",
+        text = "Pace Pal",
         fontSize = 50.sp,
         color = animatedColor,
         textAlign = TextAlign.Center,

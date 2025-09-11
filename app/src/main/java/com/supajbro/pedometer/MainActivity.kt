@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.supajbro.pedometer.ui.theme.PedometerPager
 import com.supajbro.pedometer.ui.theme.PedometerTheme
 import java.text.SimpleDateFormat
 import java.util.*
@@ -82,7 +83,7 @@ class MainActivity : ComponentActivity(), SensorEventListener
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    PedometerScreen(steps = steps, goal = goal)
+                    PedometerPager(steps = steps, goal = goal)
                 }
             }
         }

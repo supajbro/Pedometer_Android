@@ -89,87 +89,24 @@ fun PagerIndicator(pagerState: androidx.compose.foundation.pager.PagerState, pag
 fun PedometerScreen(steps: Int, goal: Int) {
     var useMiles by remember { mutableStateOf(false) }
 
-// Animated multi-color gradient
+    // Animated multi-color gradient
     val infiniteTransition = rememberInfiniteTransition()
-
-    val color1 by infiniteTransition.animateColor(
-        initialValue = Color(0xFF1A3A4B),
-        targetValue = Color(0xFF3D7589),
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 3000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
-
-    val color2 by infiniteTransition.animateColor(
-        initialValue = Color(0xFF3D7589),
-        targetValue = Color(0xFF2B5262),
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 3500, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
-
-    val color3 by infiniteTransition.animateColor(
-        initialValue = Color(0xFF2B5262),
-        targetValue = Color(0xFF1A3A4B),
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 4000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
-
-    val color4 by infiniteTransition.animateColor(
-        initialValue = Color(0xFF3D7589),
-        targetValue = Color(0xFF7CA1B0),
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 5500, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
-
-    // Animate gradient positions
-    val startX by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 4000f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(6000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
-    val startY by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 4000f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(6500, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
-    val endX by infiniteTransition.animateFloat(
-        initialValue = 4000f,
-        targetValue = 0f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(7000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
-    val endY by infiniteTransition.animateFloat(
-        initialValue = 4000f,
-        targetValue = 0f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(7500, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 brush = Brush.linearGradient(
-                    colors = listOf(color1, color2, color3, color4),
-                    start = Offset(startX, startY),
-                    end = Offset(endX, endY)
+                    colors = listOf(
+                        Color.Blue,   // Top-left
+                        Color.Black,  // Immediately fade to black
+                        Color.Black,  // Immediately fade to black
+                        Color.Black,  // Immediately fade to black
+                        Color.Black,  // Keep black for most of the gradient
+                        Color.Blue    // Bottom-right
+                    ),
+                    start = Offset(0f, 0f), // Top-left corner
+                    end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY) // Bottom-right corner
                 )
             ),
         horizontalAlignment = Alignment.CenterHorizontally

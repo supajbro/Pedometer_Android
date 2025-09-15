@@ -125,7 +125,7 @@ fun PedometerScreen(steps: Int, goal: Int) {
         Title()
         //Spacer(modifier = Modifier.weight(1f))
 
-        TotalDistance(steps = steps, useMiles)
+        TotalDistance(steps = steps, useMiles, goal = goal)
         //Spacer(modifier = Modifier.weight(.5f))
 
         StepCounter(steps = steps, goal = goal)
@@ -164,25 +164,27 @@ fun Title(){
             contentDescription = "Title",
             modifier = Modifier
                 .size(250.dp) // Set the size you want
-                .padding(32.dp)
+                .padding(0.dp)
         )
     }
 }
 
 @Composable
-fun TotalDistance(steps: Int, useMiles: Boolean) {
+fun TotalDistance(steps: Int, useMiles: Boolean, goal: Int) {
     val strideLengthMeters = 0.78f
     val distanceKm = (steps * strideLengthMeters / 1000f)
     val distance = if (useMiles) distanceKm * 0.621371f else distanceKm
     val unitText = if (useMiles) "mi" else "km"
     val distanceText = String.format("%.2f", distance)
 
+    val progress = (steps.toFloat() / goal.toFloat()).coerceIn(0f, 1f)
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "Total Distance Today:",
-            fontSize = 18.sp,
+            fontSize = 12.sp,
             fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold,
             color = Color.Cyan,
@@ -192,12 +194,20 @@ fun TotalDistance(steps: Int, useMiles: Boolean) {
 
         Text(
             text = "$distanceText $unitText",
-            fontSize = 20.sp,
+            fontSize = 16.sp,
             fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold,
             color = Color.Cyan,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 0.dp) // no extra top padding
+        )
+
+        Text(
+            text = "${(progress* 100).toInt()}% to daily goal",
+            fontSize = 16.sp,
+            fontFamily = FontFamily.SansSerif,
+            fontWeight = FontWeight.Bold,
+            color = Color.Cyan
         )
     }
 }
@@ -262,23 +272,21 @@ fun DailyGoalProgress(steps: Int, goal: Int){
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
-            text = "Daily Goal: $goal steps",
-            fontSize =  20.sp,
+            text = "Daily Goal:",
+            fontSize =  16.sp,
             fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold,
             color = Color.White
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "${(progress* 100).toInt()}% complete",
-            fontSize = 18.sp,
+            text = "$goal steps",
+            fontSize =  20.sp,
             fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold,
-            color = Color.Cyan
+            color = Color.White
         )
     }
 }

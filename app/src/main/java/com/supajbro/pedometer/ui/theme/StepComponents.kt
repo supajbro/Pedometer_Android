@@ -1,7 +1,11 @@
 package com.supajbro.pedometer.ui.theme
 
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -84,18 +88,30 @@ fun PedometerScreen(steps: Int, goal: Int) {
     // Animated multi-color gradient
     val infiniteTransition = rememberInfiniteTransition()
 
+    val animatedBlue by infiniteTransition.animateColor(
+        initialValue = Color.Blue,
+        targetValue = Color.Cyan, // change to whatever color you want to cycle to
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 3000), // 3 seconds fade
+            repeatMode = RepeatMode.Reverse // fades back and forth
+        )
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        Color.Blue,   // Top-left
-                        Color.Black,  // Immediately fade to black
-                        Color.Black,  // Immediately fade to black
-                        Color.Black,  // Immediately fade to black
-                        Color.Black,  // Keep black for most of the gradient
-                        Color.Blue    // Bottom-right
+                        animatedBlue,
+                        Color.Black,
+                        Color.Black,
+                        Color.Black,
+                        Color.Black,
+                        Color.Black,
+                        Color.Black,
+                        Color.Black,
+                        animatedBlue
                     ),
                     start = Offset(0f, 0f), // Top-left corner
                     end = Offset(
@@ -107,7 +123,7 @@ fun PedometerScreen(steps: Int, goal: Int) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Title()
-        Spacer(modifier = Modifier.weight(1f))
+        //Spacer(modifier = Modifier.weight(1f))
 
         TotalDistance(steps = steps, useMiles)
         //Spacer(modifier = Modifier.weight(.5f))
@@ -166,7 +182,7 @@ fun TotalDistance(steps: Int, useMiles: Boolean) {
     ) {
         Text(
             text = "Total Distance Today:",
-            fontSize = 28.sp,
+            fontSize = 18.sp,
             fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold,
             color = Color.Cyan,
@@ -176,7 +192,7 @@ fun TotalDistance(steps: Int, useMiles: Boolean) {
 
         Text(
             text = "$distanceText $unitText",
-            fontSize = 32.sp,
+            fontSize = 20.sp,
             fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold,
             color = Color.Cyan,

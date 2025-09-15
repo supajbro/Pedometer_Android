@@ -1,43 +1,35 @@
 package com.supajbro.pedometer.ui.theme
 
-import android.content.Context
-import androidx.compose.animation.animateColor
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+//import androidx.compose.runtime.R
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.ui.unit.dp
+import com.supajbro.pedometer.R
+
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -106,7 +98,10 @@ fun PedometerScreen(steps: Int, goal: Int) {
                         Color.Blue    // Bottom-right
                     ),
                     start = Offset(0f, 0f), // Top-left corner
-                    end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY) // Bottom-right corner
+                    end = Offset(
+                        Float.POSITIVE_INFINITY,
+                        Float.POSITIVE_INFINITY
+                    ) // Bottom-right corner
                 )
             ),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -143,38 +138,19 @@ fun DailyGoalScreen(){
 
 @Composable
 fun Title(){
-    val infiniteTransition = rememberInfiniteTransition()
-
-    // Animate flickering color between yellow, orange, and red
-    val animatedColor by infiniteTransition.animateColor(
-        initialValue = Color(0xFFFFA500), // Orange
-        targetValue = Color(0xFFFF4500), // Red-Orange
-        animationSpec = infiniteRepeatable(
-            animation = tween(800, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.pacepal), // Use your file name here
+            contentDescription = "Title",
+            modifier = Modifier
+                .size(250.dp) // Set the size you want
+                .padding(32.dp)
         )
-    )
-
-    // Animate slight scale for flicker effect
-    val animatedScale by infiniteTransition.animateFloat(
-        initialValue = 1f,
-        targetValue = 1.05f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(800, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
-
-    Text(
-        text = "Pace Pal",
-        fontSize = 50.sp,
-        color = animatedColor,
-        textAlign = TextAlign.Center,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier
-            .padding(top = 16.dp)
-            .scale(animatedScale)
-    )
+    }
 }
 
 @Composable

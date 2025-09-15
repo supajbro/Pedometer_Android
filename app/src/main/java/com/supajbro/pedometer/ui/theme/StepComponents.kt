@@ -44,6 +44,47 @@ fun PedometerPager(steps: Int, goal: Int){
     // Pager state with pageCount
     val pagerState = rememberPagerState(pageCount = { pageCount })
 
+    // Animated multi-color gradient
+    val infiniteTransition = rememberInfiniteTransition()
+
+    val animatedBlue by infiniteTransition.animateColor(
+        initialValue = Color.Blue,
+        targetValue = Color.Cyan, // change to whatever color you want to cycle to
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 3000), // 3 seconds fade
+            repeatMode = RepeatMode.Reverse // fades back and forth
+        )
+    )
+
+    // Background
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        animatedBlue,
+                        Color.Black,
+                        Color.Black,
+                        Color.Black,
+                        Color.Black,
+                        Color.Black,
+                        Color.Black,
+                        Color.Black,
+                        animatedBlue
+                    ),
+                    start = Offset(0f, 0f), // Top-left corner
+                    end = Offset(
+                        Float.POSITIVE_INFINITY,
+                        Float.POSITIVE_INFINITY
+                    ) // Bottom-right corner
+                )
+            ),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+
+    }
+
     Box(modifier = Modifier.fillMaxSize()){
         HorizontalPager(state = pagerState) { page ->
             when (page){
@@ -85,41 +126,7 @@ fun PagerIndicator(pagerState: androidx.compose.foundation.pager.PagerState, pag
 fun PedometerScreen(steps: Int, goal: Int) {
     var useMiles by remember { mutableStateOf(false) }
 
-    // Animated multi-color gradient
-    val infiniteTransition = rememberInfiniteTransition()
-
-    val animatedBlue by infiniteTransition.animateColor(
-        initialValue = Color.Blue,
-        targetValue = Color.Cyan, // change to whatever color you want to cycle to
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 3000), // 3 seconds fade
-            repeatMode = RepeatMode.Reverse // fades back and forth
-        )
-    )
-
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                brush = Brush.linearGradient(
-                    colors = listOf(
-                        animatedBlue,
-                        Color.Black,
-                        Color.Black,
-                        Color.Black,
-                        Color.Black,
-                        Color.Black,
-                        Color.Black,
-                        Color.Black,
-                        animatedBlue
-                    ),
-                    start = Offset(0f, 0f), // Top-left corner
-                    end = Offset(
-                        Float.POSITIVE_INFINITY,
-                        Float.POSITIVE_INFINITY
-                    ) // Bottom-right corner
-                )
-            ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Title()

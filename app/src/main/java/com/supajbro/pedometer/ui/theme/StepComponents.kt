@@ -2,12 +2,19 @@ package com.supajbro.pedometer.ui.theme
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -41,9 +48,9 @@ import androidx.compose.ui.unit.sp
 import com.supajbro.pedometer.R
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.delay
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PedometerPager(steps: Int, goal: Int){
 
@@ -89,17 +96,53 @@ fun PedometerPager(steps: Int, goal: Int){
     }
 
     val context = LocalContext.current
-
+    var targetScreen by remember { mutableStateOf(0) }
     var activeScreen by remember { mutableStateOf(0) }
     var dailyGoal by remember { mutableStateOf(
         context.getSharedPreferences("pedometer", Context.MODE_PRIVATE)
             .getInt("daily_goal", 10000)) }
 
-    Box(modifier = Modifier.fillMaxSize()){
+    // Handle delayed screen switch
+    LaunchedEffect(targetScreen) {
+        targetScreen?.let { newScreen ->
+            activeScreen = -1          // hide current screen
+            delay(200)                 // wait for exit animation
+            activeScreen = newScreen   // show new screen
+        }
+    }
 
-        when(activeScreen){
-            0 -> PedometerScreen(steps = steps, goal = dailyGoal)
-            1 -> DailyGoalScreen(oal = dailyGoal, onGoalChange = { newGoal -> dailyGoal = newGoal })
+    Box(modifier = Modifier.fillMaxSize()){
+        val dampening = 0.45f // lower = more bounce
+        val stiffness = 300f // lower = slower bounce
+
+        // Pedometer Screen
+        AnimatedVisibility(
+            visible = activeScreen == 0,
+            enter = scaleIn(
+                animationSpec = spring(
+                    dampingRatio = dampening,
+                    stiffness = stiffness
+                ),
+                initialScale = 0f
+            ),
+            exit = scaleOut(tween(200), targetScale = 0f)
+        ) {
+            PedometerScreen(steps = steps, goal = dailyGoal)
+        }
+
+        // Daily Goal Screen
+        AnimatedVisibility(
+            visible = activeScreen == 1,
+            enter = scaleIn(
+                animationSpec = spring(
+                    dampingRatio = dampening,
+                    stiffness = stiffness
+                ),
+                initialScale = 0f
+            ),
+            exit = scaleOut(tween(200), targetScale = 0f)
+        ) {
+            DailyGoalScreen(oal = dailyGoal, onGoalChange = { newGoal -> dailyGoal = newGoal })
         }
 
         Row(
@@ -109,11 +152,11 @@ fun PedometerPager(steps: Int, goal: Int){
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Button(onClick = { activeScreen = 0 }) {
+            Button(onClick = { targetScreen = 0 }) {
                 Text("Pedometer")
             }
             Spacer(Modifier.height(8.dp))
-            Button(onClick = { activeScreen = 1 }) {
+            Button(onClick = { targetScreen = 1 }) {
                 Text("Daily Goal")
             }
         }

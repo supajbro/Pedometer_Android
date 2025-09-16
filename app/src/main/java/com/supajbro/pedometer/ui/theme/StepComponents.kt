@@ -1,5 +1,7 @@
 package com.supajbro.pedometer.ui.theme
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloatAsState
@@ -37,7 +39,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.supajbro.pedometer.R
-
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -45,9 +48,6 @@ import com.supajbro.pedometer.R
 fun PedometerPager(steps: Int, goal: Int){
     // Page count as a State (source of truth)
     var pageCount by remember { mutableStateOf(2) }
-
-    // Pager state with pageCount
-    val pagerState = rememberPagerState(pageCount = { pageCount })
 
     // Animated multi-color gradient
     val infiniteTransition = rememberInfiniteTransition()
@@ -97,7 +97,7 @@ fun PedometerPager(steps: Int, goal: Int){
 
         when(activeScreen){
             0 -> PedometerScreen(steps = steps, goal = goal)
-            1 -> DailyGoalScreen(goal = dailyGoal, onGoalChange = { newGoal -> dailyGoal = newGoal })
+            1 -> DailyGoalScreen(oal = dailyGoal, onGoalChange = { newGoal -> dailyGoal = newGoal })
         }
 
         Row(
@@ -291,9 +291,10 @@ fun DailyGoalProgress(steps: Int, goal: Int){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DailyGoalScreen(goal: Int, onGoalChange: (Int) -> Unit){
+fun DailyGoalScreen(oal: Int, onGoalChange: (Int) -> Unit){
     var dailyGoal by remember{ mutableStateOf(10000) }
     var inputText by remember {mutableStateOf("")}
+    val context = LocalContext.current // get a valid Context
 
     Box(
         modifier = Modifier
@@ -334,6 +335,9 @@ fun DailyGoalScreen(goal: Int, onGoalChange: (Int) -> Unit){
                 onClick = {
                     inputText.toIntOrNull()?.let { newGoal ->
                         dailyGoal = newGoal
+                        val prefs = context.getSharedPreferences("pedometer", Context.MODE_PRIVATE)
+                        prefs.edit().putInt("daily_goal", dailyGoal).apply()
+                        Log.i("TAG", "updated daily goal: " + prefs.getInt("daily_goal", 10000))
                         onGoalChange(newGoal)
                         inputText = ""
                     }

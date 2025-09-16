@@ -11,6 +11,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.animateColor
@@ -75,7 +76,8 @@ class MainActivity : ComponentActivity(), SensorEventListener
 
         val prefs = getSharedPreferences("pedometer", Context.MODE_PRIVATE)
         val steps by stepCountState
-        val goal = prefs.getInt("dailyGoal", 10000)
+        val goal = prefs.getInt("daily_goal", 10000)
+        Log.i("TAG", "goal: " + goal)
 
         setContent {
             PedometerTheme {

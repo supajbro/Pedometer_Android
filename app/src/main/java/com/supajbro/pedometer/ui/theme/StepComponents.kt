@@ -46,8 +46,6 @@ import androidx.compose.ui.platform.LocalContext
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PedometerPager(steps: Int, goal: Int){
-    // Page count as a State (source of truth)
-    var pageCount by remember { mutableStateOf(2) }
 
     // Animated multi-color gradient
     val infiniteTransition = rememberInfiniteTransition()
@@ -90,13 +88,17 @@ fun PedometerPager(steps: Int, goal: Int){
 
     }
 
+    val context = LocalContext.current
+
     var activeScreen by remember { mutableStateOf(0) }
-    var dailyGoal by remember { mutableStateOf(10000) }
+    var dailyGoal by remember { mutableStateOf(
+        context.getSharedPreferences("pedometer", Context.MODE_PRIVATE)
+            .getInt("daily_goal", 10000)) }
 
     Box(modifier = Modifier.fillMaxSize()){
 
         when(activeScreen){
-            0 -> PedometerScreen(steps = steps, goal = goal)
+            0 -> PedometerScreen(steps = steps, goal = dailyGoal)
             1 -> DailyGoalScreen(oal = dailyGoal, onGoalChange = { newGoal -> dailyGoal = newGoal })
         }
 
@@ -292,9 +294,11 @@ fun DailyGoalProgress(steps: Int, goal: Int){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DailyGoalScreen(oal: Int, onGoalChange: (Int) -> Unit){
-    var dailyGoal by remember{ mutableStateOf(10000) }
+    val context = LocalContext.current
+    var dailyGoal by remember { mutableStateOf(
+        context.getSharedPreferences("pedometer", Context.MODE_PRIVATE)
+            .getInt("daily_goal", 10000)) }
     var inputText by remember {mutableStateOf("")}
-    val context = LocalContext.current // get a valid Context
 
     Box(
         modifier = Modifier

@@ -85,39 +85,29 @@ fun PedometerPager(steps: Int, goal: Int){
 
     }
 
+    var activeScreen by remember { mutableStateOf(0) }
+
     Box(modifier = Modifier.fillMaxSize()){
-        HorizontalPager(state = pagerState) { page ->
-            when (page){
-                0 -> PedometerScreen(steps = steps, goal = goal)
-                1 -> DailyGoalScreen()
-            }
+
+        when(activeScreen){
+            0 -> PedometerScreen(steps = steps, goal = goal)
+            1 -> DailyGoalScreen()
         }
 
-        // Page Indicator
-        PagerIndicator(pagerState = pagerState, pageCount = 2)
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun PagerIndicator(pagerState: androidx.compose.foundation.pager.PagerState, pageCount: Int) {
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        for (i in 0 until pageCount) {
-            Box(
-                modifier = Modifier
-                    .size(if (i == pagerState.currentPage) 12.dp else 8.dp)
-                    .padding(4.dp)
-                    .background(
-                        color = if (i == pagerState.currentPage) Color.White else Color.Gray,
-                        shape = CircleShape
-                    )
-            )
+        Row(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Button(onClick = { activeScreen = 0 }) {
+                Text("Pedometer")
+            }
+            Spacer(Modifier.height(8.dp))
+            Button(onClick = { activeScreen = 1 }) {
+                Text("Daily Goal")
+            }
         }
     }
 }
@@ -136,7 +126,7 @@ fun PedometerScreen(steps: Int, goal: Int) {
         //Spacer(modifier = Modifier.weight(.5f))
 
         StepCounter(steps = steps, goal = goal)
-        Spacer(modifier = Modifier.weight(1f))
+        //Spacer(modifier = Modifier.weight(1f))
 
         DailyGoalProgress(steps = steps, goal = goal)
 

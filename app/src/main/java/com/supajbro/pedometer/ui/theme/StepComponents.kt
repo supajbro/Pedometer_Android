@@ -13,10 +13,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 //import androidx.compose.runtime.R
 import androidx.compose.ui.Alignment
@@ -28,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -86,12 +91,13 @@ fun PedometerPager(steps: Int, goal: Int){
     }
 
     var activeScreen by remember { mutableStateOf(0) }
+    var dailyGoal by remember { mutableStateOf(10000) }
 
     Box(modifier = Modifier.fillMaxSize()){
 
         when(activeScreen){
             0 -> PedometerScreen(steps = steps, goal = goal)
-            1 -> DailyGoalScreen()
+            1 -> DailyGoalScreen(goal = dailyGoal, onGoalChange = { newGoal -> dailyGoal = newGoal })
         }
 
         Row(
@@ -142,11 +148,6 @@ fun PedometerScreen(steps: Int, goal: Int) {
             )
         }
     }
-}
-
-@Composable
-fun DailyGoalScreen(){
-
 }
 
 @Composable
@@ -285,5 +286,61 @@ fun DailyGoalProgress(steps: Int, goal: Int){
             fontWeight = FontWeight.Bold,
             color = Color.White
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DailyGoalScreen(goal: Int, onGoalChange: (Int) -> Unit){
+    var dailyGoal by remember{ mutableStateOf(10000) }
+    var inputText by remember {mutableStateOf("")}
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ){
+        Column(
+            modifier = Modifier.align(Alignment.TopCenter),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Text(
+                text = "Daily Goal: $dailyGoal steps",
+                fontSize = 24.sp,
+                color = Color.White
+            )
+        }
+
+        Column(
+            modifier = Modifier.align(Alignment.Center),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Enter new daily goal:", color = Color.White)
+            Spacer(modifier = Modifier.height(8.dp))
+            TextField(
+                value = inputText,
+                onValueChange = { inputText = it },
+                placeholder = { Text("e.g. 12000") },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                colors = TextFieldDefaults.textFieldColors(
+                    disabledTextColor = Color.White,
+                    disabledPlaceholderColor = Color.Gray,
+                    disabledSupportingTextColor = Color.DarkGray
+                )
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = {
+                    inputText.toIntOrNull()?.let { newGoal ->
+                        dailyGoal = newGoal
+                        onGoalChange(newGoal)
+                        inputText = ""
+                    }
+                }
+            ) {
+                Text("Set Goal")
+            }
+        }
     }
 }

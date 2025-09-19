@@ -8,6 +8,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -48,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import com.supajbro.pedometer.R
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.lerp
 import kotlinx.coroutines.delay
 
 
@@ -66,6 +68,15 @@ fun PedometerPager(steps: Int, goal: Int){
         )
     )
 
+    val animatedOrange by infiniteTransition.animateColor(
+        initialValue = Color(0xFFEF9224),
+        targetValue = Color(0xFFF35E2F),
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 3000), // 3 seconds fade
+            repeatMode = RepeatMode.Reverse // fades back and forth
+        )
+    )
+
     // Background
     Column(
         modifier = Modifier
@@ -73,7 +84,7 @@ fun PedometerPager(steps: Int, goal: Int){
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        animatedBlue,
+                        animatedOrange,
                         Color.Black,
                         Color.Black,
                         Color.Black,
@@ -81,7 +92,9 @@ fun PedometerPager(steps: Int, goal: Int){
                         Color.Black,
                         Color.Black,
                         Color.Black,
-                        animatedBlue
+                        Color.Black,
+                        Color.Black,
+                        animatedOrange
                     ),
                     start = Offset(0f, 0f), // Top-left corner
                     end = Offset(
@@ -173,25 +186,25 @@ fun PedometerScreen(steps: Int, goal: Int) {
         Title()
         //Spacer(modifier = Modifier.weight(1f))
 
-        TotalDistance(steps = steps, useMiles, goal = goal)
-        //Spacer(modifier = Modifier.weight(.5f))
-
         StepCounter(steps = steps, goal = goal)
         //Spacer(modifier = Modifier.weight(1f))
 
-        DailyGoalProgress(steps = steps, goal = goal)
+        TotalDistance(steps = steps, useMiles, goal = goal)
+        //Spacer(modifier = Modifier.weight(.5f))
 
-        // Button at bottom to toggle km/miles
-        Button(
-            onClick = { useMiles = !useMiles },
-            colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
-            modifier = Modifier.padding(bottom = 32.dp)
-        ) {
-            Text(
-                text = if (useMiles) "Show in KM" else "Show in Miles",
-                color = Color.White
-            )
-        }
+        //DailyGoalProgress(steps = steps, goal = goal)
+
+        //// Button at bottom to toggle km/miles
+        //Button(
+        //    onClick = { useMiles = !useMiles },
+        //    colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
+        //    modifier = Modifier.padding(bottom = 32.dp)
+        //) {
+        //    Text(
+        //        text = if (useMiles) "Show in KM" else "Show in Miles",
+        //        color = Color.White
+        //    )
+        //}
     }
 }
 
@@ -225,22 +238,22 @@ fun TotalDistance(steps: Int, useMiles: Boolean, goal: Int) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Total Distance Today:",
-            fontSize = 12.sp,
-            fontFamily = FontFamily.SansSerif,
-            fontWeight = FontWeight.Bold,
-            color = Color.Cyan,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(bottom = 4.dp) // smaller spacing below
-        )
+        //Text(
+        //    text = "Total Distance Today:",
+        //    fontSize = 12.sp,
+        //    fontFamily = FontFamily.SansSerif,
+        //    fontWeight = FontWeight.Bold,
+        //    color = Color(0xFFEF9224),
+        //    textAlign = TextAlign.Center,
+        //    modifier = Modifier.padding(bottom = 4.dp) // smaller spacing below
+        //)
 
         Text(
             text = "$distanceText $unitText",
             fontSize = 16.sp,
             fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold,
-            color = Color.Cyan,
+            color = Color(0xFFEF9224),
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 0.dp) // no extra top padding
         )
@@ -250,7 +263,7 @@ fun TotalDistance(steps: Int, useMiles: Boolean, goal: Int) {
             fontSize = 16.sp,
             fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold,
-            color = Color.Cyan
+            color = Color(0xFFEF9224)
         )
     }
 }
@@ -279,7 +292,7 @@ fun StepCounter(steps: Int, goal: Int) {
         CircularProgressIndicator(
             progress = progress,
             strokeWidth = 12.dp,
-            color = Color.Cyan,
+            color = Color(0xFFEF9224),
             modifier = Modifier.fillMaxSize()
         )
 

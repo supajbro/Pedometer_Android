@@ -61,7 +61,6 @@ import kotlin.math.roundToInt
 
 @Composable
 fun PedometerPager(steps: Int, goal: Int){
-
     // Animated multi-color gradient
     val infiniteTransition = rememberInfiniteTransition()
 
@@ -172,11 +171,11 @@ fun PedometerPager(steps: Int, goal: Int){
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(onClick = { targetScreen = 0 }) {
-                Text("Pedometer")
+                Text("Home")
             }
             Spacer(Modifier.height(8.dp))
             Button(onClick = { targetScreen = 1 }) {
-                Text("Daily Goal")
+                Text("Goal Setup")
             }
         }
     }
@@ -417,35 +416,41 @@ fun DailyGoalScreen(oal: Int, onGoalChange: (Int) -> Unit){
             .padding(16.dp)
     ){
         Column(
-            modifier = Modifier.align(Alignment.TopCenter),
+            modifier = Modifier.align(Alignment.Center),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "Daily Goal:",
-                fontSize = 20.sp,
-                fontFamily = FontFamily.SansSerif,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "$dailyGoal steps",
-                fontSize = 24.sp,
-                fontFamily = FontFamily.SansSerif,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
+            //Spacer(modifier = Modifier.height(8.dp))
+//
+            //Text(
+            //    text = "Daily Goal:",
+            //    fontSize = 20.sp,
+            //    fontFamily = FontFamily.SansSerif,
+            //    fontWeight = FontWeight.Bold,
+            //    color = Color.White
+            //)
+//
+            //Spacer(modifier = Modifier.height(8.dp))
+//
+            //Text(
+            //    text = "$dailyGoal steps",
+            //    fontSize = 24.sp,
+            //    fontFamily = FontFamily.SansSerif,
+            //    fontWeight = FontWeight.Bold,
+            //    color = Color.White
+            //)
         }
 
         Column(
             modifier = Modifier.align(Alignment.Center),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Enter new daily goal:", color = Color.White)
+            Text(
+                "Enter new daily goal:",
+                fontSize = 20.sp,
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
             Spacer(modifier = Modifier.height(8.dp))
             TextField(
                 value = inputText,

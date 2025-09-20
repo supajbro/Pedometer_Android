@@ -51,7 +51,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.lerp
 import kotlinx.coroutines.delay
-
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.unit.dp
+import androidx.compose.material3.CircularProgressIndicator
 
 @Composable
 fun PedometerPager(steps: Int, goal: Int){
@@ -282,15 +287,33 @@ fun StepCounter(steps: Int, goal: Int) {
 
     val progress = (steps.toFloat() / goal.toFloat()).coerceIn(0f, 1f)
 
+    val animatedProgress = remember { Animatable(0f) }
+    LaunchedEffect(progress) {
+        delay(1000)
+        animatedProgress.animateTo(
+            targetValue = progress,
+            animationSpec = tween(durationMillis = 1000) // 1s animation
+        )
+    }
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .size(220.dp) // Circle size
             .padding(16.dp)
     ) {
+
+        // Grey circle that is always full
+        CircularProgressIndicator(
+            progress = goal.toFloat(),
+            strokeWidth = 12.dp,
+            color = Color.Gray,
+            modifier = Modifier.fillMaxSize()
+        )
+
         // Outer circular progress (goal ring)
         CircularProgressIndicator(
-            progress = progress,
+            progress = animatedProgress.value,
             strokeWidth = 12.dp,
             color = Color(0xFFEF9224),
             modifier = Modifier.fillMaxSize()

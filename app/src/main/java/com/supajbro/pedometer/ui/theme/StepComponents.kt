@@ -57,6 +57,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.CircularProgressIndicator
+import kotlin.math.roundToInt
 
 @Composable
 fun PedometerPager(steps: Int, goal: Int){
@@ -236,9 +237,29 @@ fun TotalDistance(steps: Int, useMiles: Boolean, goal: Int) {
     val distanceKm = (steps * strideLengthMeters / 1000f)
     val distance = if (useMiles) distanceKm * 0.621371f else distanceKm
     val unitText = if (useMiles) "mi" else "km"
-    val distanceText = String.format("%.2f", distance)
 
     val progress = (steps.toFloat() / goal.toFloat()).coerceIn(0f, 1f)
+
+    // Animate distance text
+    val animatedDistance = remember { Animatable(0f) }
+    LaunchedEffect(distance) {
+        delay(1000)
+        animatedDistance.animateTo(
+            targetValue = distance.toFloat(),
+            animationSpec = tween(durationMillis = 1000)
+        )
+    }
+    val distanceText = String.format("%.2f", animatedDistance.value)
+
+    // Animate goal steps text
+    val animatedProgress = remember { Animatable(0f) }
+    LaunchedEffect(progress) {
+        delay(1000)
+        animatedProgress.animateTo(
+            targetValue = progress.toFloat(),
+            animationSpec = tween(durationMillis = 1000)
+        )
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -264,7 +285,7 @@ fun TotalDistance(steps: Int, useMiles: Boolean, goal: Int) {
         )
 
         Text(
-            text = "${(progress* 100).toInt()}% to daily goal",
+            text = "${(animatedProgress.value * 100).toInt()}% to daily goal",
             fontSize = 16.sp,
             fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold,
@@ -287,12 +308,23 @@ fun StepCounter(steps: Int, goal: Int) {
 
     val progress = (steps.toFloat() / goal.toFloat()).coerceIn(0f, 1f)
 
+    // Animate progress circle
     val animatedProgress = remember { Animatable(0f) }
     LaunchedEffect(progress) {
         delay(1000)
         animatedProgress.animateTo(
             targetValue = progress,
             animationSpec = tween(durationMillis = 1000) // 1s animation
+        )
+    }
+
+    // Animate steps text
+    val animatedSteps = remember { Animatable(0f) }
+    LaunchedEffect(steps) {
+        delay(1000)
+        animatedSteps.animateTo(
+            targetValue = steps.toFloat(),
+            animationSpec = tween(durationMillis = 1000)
         )
     }
 
@@ -333,7 +365,7 @@ fun StepCounter(steps: Int, goal: Int) {
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "$steps",
+                text = "${animatedSteps.value.roundToInt()}",
                 fontSize = 40.sp,
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Bold,

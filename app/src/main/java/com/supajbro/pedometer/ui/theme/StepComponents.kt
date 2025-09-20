@@ -450,7 +450,7 @@ fun DailyGoalScreen(oal: Int, onGoalChange: (Int) -> Unit){
             TextField(
                 value = inputText,
                 onValueChange = { inputText = it },
-                placeholder = { Text("e.g. 12000") },
+                placeholder = { Text("e.g. 6000") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                 colors = TextFieldDefaults.textFieldColors(

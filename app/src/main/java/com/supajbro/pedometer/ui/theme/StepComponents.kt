@@ -434,28 +434,26 @@ fun DailyGoalScreen(oal: Int, onGoalChange: (Int) -> Unit){
             .padding(16.dp)
     ){
         Column(
-            modifier = Modifier.align(Alignment.Center),
+            modifier = Modifier.align(Alignment.TopCenter),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            //Spacer(modifier = Modifier.height(8.dp))
-//
-            //Text(
-            //    text = "Daily Goal:",
-            //    fontSize = 20.sp,
-            //    fontFamily = FontFamily.SansSerif,
-            //    fontWeight = FontWeight.Bold,
-            //    color = Color.White
-            //)
-//
-            //Spacer(modifier = Modifier.height(8.dp))
-//
-            //Text(
-            //    text = "$dailyGoal steps",
-            //    fontSize = 24.sp,
-            //    fontFamily = FontFamily.SansSerif,
-            //    fontWeight = FontWeight.Bold,
-            //    color = Color.White
-            //)
+            Spacer(modifier = Modifier.height(100.dp))
+
+            Text(
+                text = "Current Daily Goal:",
+                fontSize = 20.sp,
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+
+            Text(
+                text = "$dailyGoal",
+                fontSize = 24.sp,
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
         }
 
         Column(

@@ -58,6 +58,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.CircularProgressIndicator
 import kotlin.math.roundToInt
+import android.os.VibrationEffect
+import android.os.Vibrator
 
 @Composable
 fun PedometerPager(steps: Int, goal: Int){
@@ -170,11 +172,19 @@ fun PedometerPager(steps: Int, goal: Int){
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Button(onClick = { targetScreen = 0 }) {
+            Button(onClick =
+            {
+                targetScreen = 0
+                context.vibrate(50)
+            }) {
                 Text("Home")
             }
             Spacer(Modifier.height(8.dp))
-            Button(onClick = { targetScreen = 1 }) {
+            Button(onClick =
+            {
+                targetScreen = 1
+                context.vibrate(50)
+            }) {
                 Text("Goal Setup")
             }
         }
@@ -482,11 +492,24 @@ fun DailyGoalScreen(oal: Int, onGoalChange: (Int) -> Unit){
                         Log.i("TAG", "updated daily goal: " + prefs.getInt("daily_goal", 10000))
                         onGoalChange(newGoal)
                         inputText = ""
+                        context.vibrate(50)
                     }
                 }
             ) {
                 Text("Set Goal")
             }
         }
+    }
+}
+
+fun Context.vibrate(duration: Long = 100) {
+    val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        vibrator.vibrate(
+            VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE)
+        )
+    } else {
+        // Deprecated in API 26
+        vibrator.vibrate(duration)
     }
 }

@@ -275,12 +275,20 @@ fun TotalDistance(steps: Int, useMiles: Boolean, goal: Int) {
 
         Text(
             text = "$distanceText $unitText",
-            fontSize = 16.sp,
+            fontSize = 12.sp,
             fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold,
             color = Color(0xFFEF9224),
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 0.dp) // no extra top padding
+        )
+
+        Text(
+            text = "Goal: $goal steps",
+            fontSize =  12.sp,
+            fontFamily = FontFamily.SansSerif,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFFEF9224)
         )
 
         Text(

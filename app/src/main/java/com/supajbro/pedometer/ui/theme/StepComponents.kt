@@ -165,6 +165,21 @@ fun PedometerPager(steps: Int, goal: Int){
             DailyGoalScreen(oal = dailyGoal, onGoalChange = { newGoal -> dailyGoal = newGoal })
         }
 
+        // Weekly Steps Screen
+        AnimatedVisibility(
+            visible = activeScreen == 2,
+            enter = scaleIn(
+                animationSpec = spring(
+                    dampingRatio = dampening,
+                    stiffness = stiffness
+                ),
+                initialScale = 0f
+            ),
+            exit = scaleOut(tween(200), targetScale = 0f)
+        ) {
+            WeeklyStepsScreen()
+        }
+
         Row(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -172,20 +187,59 @@ fun PedometerPager(steps: Int, goal: Int){
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            val width = 100
+            val height = 40
+
             Button(onClick =
             {
                 targetScreen = 0
                 context.vibrate(50)
-            }) {
-                Text("Home")
+            },
+                modifier = Modifier
+                    .width(width.dp)
+                    .height(height.dp)
+                ) {
+                Text(
+                    text = "Home",
+                    modifier = Modifier.fillMaxSize(),
+                    textAlign = TextAlign.Center
+                )
             }
+
             Spacer(Modifier.height(8.dp))
+
             Button(onClick =
             {
                 targetScreen = 1
                 context.vibrate(50)
-            }) {
-                Text("Goal Setup")
+            },
+                modifier = Modifier
+                    .width(width.dp)
+                    .height(height.dp)
+                ) {
+                Text(
+                    text = "Goal Setup",
+                    modifier = Modifier.fillMaxSize(),
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            Button(onClick =
+            {
+                targetScreen = 2
+                context.vibrate(50)
+            },
+                modifier = Modifier
+                    .width(width.dp)
+                    .height(height.dp)
+                ) {
+                Text(
+                    text = "Weekly Steps",
+                    modifier = Modifier.fillMaxSize(),
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
@@ -510,4 +564,9 @@ fun Context.vibrate(duration: Long = 100) {
         // Deprecated in API 26
         vibrator.vibrate(duration)
     }
+}
+
+@Composable
+fun WeeklyStepsScreen(){
+
 }

@@ -60,6 +60,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import kotlin.math.roundToInt
 import android.os.VibrationEffect
 import android.os.Vibrator
+import androidx.compose.material3.MaterialTheme
 
 @Composable
 fun PedometerPager(steps: Int, goal: Int){
@@ -131,6 +132,8 @@ fun PedometerPager(steps: Int, goal: Int){
         }
     }
 
+    val weeklySteps = listOf(4500, 6200, 7000, 8000, 5500, 10000, 3000)
+
     Box(modifier = Modifier.fillMaxSize()){
         val dampening = 0.45f // lower = more bounce
         val stiffness = 300f // lower = slower bounce
@@ -177,7 +180,7 @@ fun PedometerPager(steps: Int, goal: Int){
             ),
             exit = scaleOut(tween(200), targetScale = 0f)
         ) {
-            WeeklyStepsScreen()
+            WeeklyStepsScreen(weeklySteps)
         }
 
         Row(
@@ -253,27 +256,10 @@ fun PedometerScreen(steps: Int, goal: Int) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Title()
-        //Spacer(modifier = Modifier.weight(1f))
 
         StepCounter(steps = steps, goal = goal)
-        //Spacer(modifier = Modifier.weight(1f))
 
         TotalDistance(steps = steps, useMiles, goal = goal)
-        //Spacer(modifier = Modifier.weight(.5f))
-
-        //DailyGoalProgress(steps = steps, goal = goal)
-
-        //// Button at bottom to toggle km/miles
-        //Button(
-        //    onClick = { useMiles = !useMiles },
-        //    colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
-        //    modifier = Modifier.padding(bottom = 32.dp)
-        //) {
-        //    Text(
-        //        text = if (useMiles) "Show in KM" else "Show in Miles",
-        //        color = Color.White
-        //    )
-        //}
     }
 }
 
@@ -567,6 +553,30 @@ fun Context.vibrate(duration: Long = 100) {
 }
 
 @Composable
-fun WeeklyStepsScreen(){
+fun WeeklyStepsScreen(stepsPerDay: List<Int>){
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "Weekly Steps",
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
 
+        val daysOfWeek = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+
+        stepsPerDay.forEachIndexed { index, steps ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = daysOfWeek[index])
+                Text(text = "$steps steps")
+            }
+        }
+    }
 }

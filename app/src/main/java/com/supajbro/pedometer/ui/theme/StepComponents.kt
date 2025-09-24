@@ -60,6 +60,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import kotlin.math.roundToInt
 import android.os.VibrationEffect
 import android.os.Vibrator
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 
 @Composable
@@ -551,30 +552,74 @@ fun Context.vibrate(duration: Long = 100) {
 }
 
 @Composable
-fun WeeklyStepsScreen(stepsPerDay: List<Int>){
-    Column(
+fun WeeklyStepsScreen(stepsPerDay: List<Int>) {
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(
-            text = "Weekly Steps",
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+        Column(
+            modifier = Modifier.align(Alignment.TopCenter),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(100.dp))
 
-        val daysOfWeek = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+            Text(
+                text = "Weekly Steps",
+                fontSize = 24.sp,
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
 
-        stepsPerDay.forEachIndexed { index, steps ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = daysOfWeek[index])
-                Text(text = "$steps steps")
+            Spacer(modifier = Modifier.height(16.dp))
+
+            val daysOfWeek = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+
+            stepsPerDay.forEachIndexed { index, steps ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = Color.Gray, shape = RoundedCornerShape(8.dp))
+                            .padding(horizontal = 12.dp, vertical = 6.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = daysOfWeek[index],
+                            color = Color.White,
+                            fontWeight = FontWeight.Medium
+                        )
+
+                        Text(
+                            text = "$steps steps",
+                            color = Color.White,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+
+                    //// Box around steps text
+                    //Box(
+                    //    modifier = Modifier
+                    //        .background(color = Color.DarkGray, shape = RoundedCornerShape(8.dp))
+                    //        .padding(horizontal = 12.dp, vertical = 6.dp)
+                    //) {
+                    //    Text(
+                    //        text = "$steps steps",
+                    //        color = Color.White,
+                    //        fontWeight = FontWeight.Medium
+                    //    )
+                    //}
+                }
             }
         }
     }
 }
+

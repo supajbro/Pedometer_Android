@@ -63,7 +63,7 @@ import android.os.Vibrator
 import androidx.compose.material3.MaterialTheme
 
 @Composable
-fun PedometerPager(steps: Int, goal: Int){
+fun PedometerPager(steps: Int, goal: Int, stepsPerDay: List<Int>){
     // Animated multi-color gradient
     val infiniteTransition = rememberInfiniteTransition()
 
@@ -132,8 +132,6 @@ fun PedometerPager(steps: Int, goal: Int){
         }
     }
 
-    val weeklySteps = listOf(4500, 6200, 7000, 8000, 5500, 10000, 3000)
-
     Box(modifier = Modifier.fillMaxSize()){
         val dampening = 0.45f // lower = more bounce
         val stiffness = 300f // lower = slower bounce
@@ -180,7 +178,7 @@ fun PedometerPager(steps: Int, goal: Int){
             ),
             exit = scaleOut(tween(200), targetScale = 0f)
         ) {
-            WeeklyStepsScreen(weeklySteps)
+            WeeklyStepsScreen(stepsPerDay)
         }
 
         Row(

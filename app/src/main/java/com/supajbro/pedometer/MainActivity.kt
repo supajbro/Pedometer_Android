@@ -41,6 +41,7 @@ import com.supajbro.pedometer.ui.theme.PedometerTheme
 import java.text.SimpleDateFormat
 import java.util.*
 import com.supajbro.pedometer.ui.theme.PedometerScreen
+import org.json.JSONObject
 
 class MainActivity : ComponentActivity(), SensorEventListener
 {
@@ -85,7 +86,7 @@ class MainActivity : ComponentActivity(), SensorEventListener
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    PedometerPager(steps = steps, goal = goal)
+                    PedometerPager(steps = steps, goal = goal, stepsPerDay = getWeeklyStepsList())
                 }
             }
         }
@@ -108,12 +109,24 @@ class MainActivity : ComponentActivity(), SensorEventListener
             val totalSinceReboot = event.values[0]
 
             val today = getTodayDate()
+            val currentWeek = getWeekOfYear()
+            val savedWeek = prefs.getInt("weekOfYear", -1)
+            val dayOfWeek = getDayOfWeek()
 
-            val savedDate = prefs.getString("date", null)
+            var weeklySteps = prefs.getString("weeklySteps", null)?.let {
+                JSONObject(it)
+            } ?: JSONObject()
+
             val savedBaseline = prefs.getFloat("baseline", -1f)
 
-            if (savedDate != today || savedBaseline < 0) {
-                // New day or first run → reset baseline
+            if (savedWeek != currentWeek) {
+                // New week → reset weekly steps
+                weeklySteps = JSONObject()
+                prefs.edit().putInt("weekOfYear", currentWeek).apply()
+            }
+
+            if (savedBaseline < 0 || prefs.getString("date", null) != today) {
+                // New day → reset baseline
                 prefs.edit()
                     .putString("date", today)
                     .putFloat("baseline", totalSinceReboot)
@@ -126,7 +139,10 @@ class MainActivity : ComponentActivity(), SensorEventListener
             val currentSteps = (totalSinceReboot - baselineSteps).toInt()
             stepCountState.value = currentSteps
 
+            // Save steps for today in weeklySteps
+            weeklySteps.put(dayOfWeek, currentSteps)
             prefs.edit()
+                .putString("weeklySteps", weeklySteps.toString())
                 .putInt("todaySteps", currentSteps)
                 .apply()
         }
@@ -134,8 +150,40 @@ class MainActivity : ComponentActivity(), SensorEventListener
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 
-    private fun getTodayDate(): String {
+    fun getTodayDate(): String {
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         return sdf.format(Date())
+    }
+
+    fun getDayOfWeek(): String {
+        val sdf = SimpleDateFormat("EEEE", Locale.getDefault())
+        return sdf.format(Date()) // returns "Monday", "Tuesday", etc.
+    }
+
+    fun getWeekOfYear(): Int {
+        val calendar = Calendar.getInstance()
+        return calendar.get(Calendar.WEEK_OF_YEAR)
+    }
+
+    fun getWeeklySteps(): Map<String, Int> {
+        val json = prefs.getString("weeklySteps", null) ?: return emptyMap()
+        val map = mutableMapOf<String, Int>()
+        val obj = JSONObject(json)
+        obj.keys().forEach { key ->
+            map[key] = obj.getInt(key)
+        }
+        return map
+    }
+
+    fun getWeeklyStepsList(): List<Int> {
+        val weeklySteps = getWeeklySteps() // map of "Monday" to steps
+        val daysOfWeekFull = listOf(
+            "Monday", "Tuesday", "Wednesday", "Thursday",
+            "Friday", "Saturday", "Sunday"
+        )
+
+        return daysOfWeekFull.map { day ->
+            weeklySteps[day] ?: 0 // default to 0 if no steps for that day
+        }
     }
 }
